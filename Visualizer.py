@@ -35,4 +35,4 @@ def visualize(filename: str, node1:str, node2:str):
 
 if __name__ == '__main__':
     # visualize('route.csv', 'Origin', 'Destination')
-    visualize('fairbank_stop_line.csv', 'origin_id', 'dest_id')
+    visualize('csv_filename.csv', 'origin_id', 'dest_id')
