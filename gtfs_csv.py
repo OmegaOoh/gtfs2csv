@@ -52,8 +52,6 @@ def convert_gtfs_to_csv(gtfs_dir,
 
         merged_df = merged_df.merge(routes_df[['route_id', 'route_short_name', 'agency_id']], how='left', on='route_id')
 
-        trips_df.to_csv('ai_debug.csv', index=False)
-
         def fill_missing_route_id(row):
             if pd.isna(row['route_id']):
                 trip_id = row['trip_id']
@@ -62,10 +60,7 @@ def convert_gtfs_to_csv(gtfs_dir,
                 trip_ls = trips_df['route_id'].tolist()
                 return trip_ls[trip_ind]
 
-
         merged_df['route_id'] = merged_df.apply(fill_missing_route_id, axis=1)
-
-
 
         # Calculate the next stop ID (considering the last stop has None as next)
         merged_df['next_stop_id'] = merged_df.groupby('trip_id')['stop_id'].transform(lambda x: x.shift(-1))
@@ -94,5 +89,5 @@ def convert_gtfs_to_csv(gtfs_dir,
 
 
 if __name__ == "__main__":
-    convert_gtfs_to_csv('fairbank_ak', output_col=['stop_id', 'route_id', 'next_stop_id'])
+    convert_gtfs_to_csv('fairbank', output_col=['stop_id', 'route_id', 'next_stop_id'])
 
