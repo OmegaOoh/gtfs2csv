@@ -65,7 +65,7 @@ def convert_gtfs_to_csv(gtfs_dir, transfer_distance_threshold=500,
         # Export to CSV
         output_df.to_csv(f'{gtfs_dir}_stop_line.csv', index=False)
 
-        print("Conversion successful! Output saved to stops_and_lines.csv")
+        print(f"Conversion successful! Output saved to {gtfs_dir}_stop_line.csv")
 
     except FileNotFoundError as e:
         print(f"Error: GTFS files not found in directory {gtfs_dir}. Please check the path.")
@@ -78,4 +78,4 @@ def convert_gtfs_to_csv(gtfs_dir, transfer_distance_threshold=500,
 if __name__ == "__main__":
     transfer_threshold = 100 / 1000
     convert_gtfs_to_csv('fairbank', transfer_distance_threshold=transfer_threshold,
-                        output_col=['stop_id', 'next_stop_id'])
+                        output_col=['stop_id', 'route_short_name', 'next_stop_id'])
