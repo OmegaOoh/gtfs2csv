@@ -1,0 +1,10 @@
+route_id,agency_id,route_short_name,route_long_name,route_type
+"Blue","1","Blue","Johansen Retail Center, UAF, Fred Meyer West, Airport Way, Shoppers Forum Mall, Noel Wien Library","3"
+"Brown","1","Brown","Johansen Retail Center, Hamilton Acres","3"
+"Gold","1","Gold","Fort Wainwright","3"
+"Green","1","Green","North Pole","3"
+"Grey","1","Grey","Farmers Loop","3"
+"Orange","1","Orange","Van Horn Rd, Hospital, Cheif Andew Issac Health Center, Noel Wien Library, Fred Meyer West","3"
+"Purple","1","Purple","South Cushman, Van Horn Rd, Cheif Andrew Issac Health Center, Hospital","3"
+"Red","1","Red","Johansen Retail Center, UAF, Fred Meyer West, Airport Way, Shoppers Forum Mall, Noel Wien Library","3"
+"Yellow","1","Yellow","Airport, Fred Meyer West, UAF, University West","3"
