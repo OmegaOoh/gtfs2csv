@@ -22,8 +22,8 @@ def lat_lon_distance(lat1, lon1, lat2, lon2):
     return line * gp_dist.EARTH_RADIUS
 
 
-def convert_gtfs_to_csv(gtfs_dir, transfer_distance_threshold=500,
-                        output_col=['stop_id', 'stop_name', 'agency_id', 'route_short_name', 'next_stop_id']):
+def convert_gtfs_to_csv(gtfs_dir,
+                        output_col=None):
     """
     Converts GTFS files from a directory to a CSV with stops and passing lines, with potential transferability information,
     including origin stop ID (current stop) and destination stop ID (next stop).
@@ -36,18 +36,36 @@ def convert_gtfs_to_csv(gtfs_dir, transfer_distance_threshold=500,
       None
     """
 
+    if output_col is None:
+        output_col = ['stop_id', 'stop_name', 'agency_id',
+                      'route_id', 'route_short_name', 'next_stop_id']
     try:
         # Read GTFS files
         stops_df = pd.read_csv(f"{gtfs_dir}/stops.txt")
         routes_df = pd.read_csv(f"{gtfs_dir}/routes.txt")
         stop_times_df = pd.read_csv(f"{gtfs_dir}/stop_times.txt")
         trips_df = pd.read_csv(f"{gtfs_dir}/trips.txt")
-
         # Merge DataFrames
-        merged_df = stop_times_df.merge(stops_df[['stop_id', 'stop_name', 'stop_lat', 'stop_lon']], how='left',
+        merged_df = stop_times_df.merge(stops_df[['stop_id', 'stop_name']], how='left',
                                         on='stop_id')
         merged_df = merged_df.merge(trips_df[['trip_id', 'route_id']], how='left', on='trip_id')
+
         merged_df = merged_df.merge(routes_df[['route_id', 'route_short_name', 'agency_id']], how='left', on='route_id')
+
+        trips_df.to_csv('ai_debug.csv', index=False)
+
+        def fill_missing_route_id(row):
+            if pd.isna(row['route_id']):
+                trip_id = row['trip_id']
+                trip_ls = trips_df['trip_id'].tolist()
+                trip_ind = trip_ls.index(str(trip_id).strip())
+                trip_ls = trips_df['route_id'].tolist()
+                return trip_ls[trip_ind]
+
+
+        merged_df['route_id'] = merged_df.apply(fill_missing_route_id, axis=1)
+
+
 
         # Calculate the next stop ID (considering the last stop has None as next)
         merged_df['next_stop_id'] = merged_df.groupby('trip_id')['stop_id'].transform(lambda x: x.shift(-1))
@@ -76,6 +94,5 @@ def convert_gtfs_to_csv(gtfs_dir, transfer_distance_threshold=500,
 
 
 if __name__ == "__main__":
-    transfer_threshold = 100 / 1000
-    convert_gtfs_to_csv('fairbank', transfer_distance_threshold=transfer_threshold,
-                        output_col=['stop_id', 'route_short_name', 'next_stop_id'])
+    convert_gtfs_to_csv('fairbank_ak', output_col=['stop_id', 'route_id', 'next_stop_id'])
+
